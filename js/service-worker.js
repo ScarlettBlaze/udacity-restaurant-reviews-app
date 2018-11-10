@@ -1,7 +1,8 @@
+const cacheName = 'v1';
 const cacheContents = [
     '/',
     '/index.html',
-    '/restuarant.html',
+    '/restaurant.html',
     '/css/styles.css',
     '/js/dbhelper.js',
     '/js/main.js',
@@ -21,7 +22,7 @@ const cacheContents = [
 
 self.addEventListener('install', function(e) {
     e.waitUntil(
-        caches.open('v1').then(function(cache) {
+        caches.open(cacheName).then(function(cache) {
             return cache.addAll(cacheContents);
         })
     );
@@ -29,17 +30,18 @@ self.addEventListener('install', function(e) {
 
 self.addEventListener('fetch', function(e) {
     e.respondWith(
-        caches.match(e.request).then(function(reponse) {
-            if(response) {
-                console.log('Found', e.request, 'in cache');
+        caches.match(e.request).then(function(response) {
+            if (response) {
+                console.log('Found ', e.request, ' in cache');
                 return response;
             }
             else {
                 console.log('Could not find ', e.request, ' in cache. Fetching...');
                 return fetch(e.request)
                 .then(function(response) {
-                    caches.open('v1').then(function(cache) {
-                        cache.put(e.request, response);
+                    const clonedResponse = response.clone(); 
+                    caches.open(cacheName).then(function(cache) {
+                        cache.put(e.request, clonedResponse);
                     })
                     return response;
                 })
@@ -50,3 +52,4 @@ self.addEventListener('fetch', function(e) {
         })
     );
 });
+console.log('Service Worker: LOADED!');
