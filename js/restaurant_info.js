@@ -1,3 +1,14 @@
+/**
+ * Register service-worker.js
+ */
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker
+  .register('/js/service-worker.js')
+  .catch(function(err) {
+    console.error(err);
+  });
+}
+
 let restaurant;
 var newMap;
 
